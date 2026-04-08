@@ -7,9 +7,10 @@ let player2Ready = false;
 let seekInterval = null;
 let isSeeking = false;
 
-const btnLoad  = document.getElementById('btn-load');
-const btnPlay  = document.getElementById('btn-play');
-const btnPause = document.getElementById('btn-pause');
+const btnLoad   = document.getElementById('btn-load');
+const btnPlay   = document.getElementById('btn-play');
+const btnPause  = document.getElementById('btn-pause');
+const btnResync = document.getElementById('btn-resync');
 const seekbar  = document.getElementById('seekbar');
 const currentTimeEl = document.getElementById('current-time');
 const totalTimeEl   = document.getElementById('total-time');
@@ -94,6 +95,7 @@ function onPlayerReady(num) {
     // 両方準備完了 → 自動再生スタート
     btnPlay.disabled = false;
     btnPause.disabled = false;
+    btnResync.disabled = false;
     startPlayback();
   }
 }
@@ -135,6 +137,18 @@ btnPause.addEventListener('click', () => {
   player1.pauseVideo();
   player2.pauseVideo();
   showPlayButton();
+});
+
+btnResync.addEventListener('click', () => {
+  if (!player1Ready || !player2Ready) return;
+  player1.seekTo(0, true);
+  player2.seekTo(0, true);
+  setTimeout(() => {
+    player1.playVideo();
+    player2.playVideo();
+    showPauseButton();
+    startSeekbarUpdate();
+  }, 300);
 });
 
 // ── シークバー ──────────────────────────────────────────────────────────────

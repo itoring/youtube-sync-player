@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>つかいかた｜いっしょにみよう！</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 16px;
+      font-size: 1.2rem;
+      line-height: 1.8;
+    }
+
+    .back-link {
+      display: inline-block;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 1rem;
+      margin-bottom: 12px;
+    }
+
+    .back-link:hover {
+      color: #0ea5e9;
+      text-decoration: underline;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+    }
+
+    .step {
+      background: #fff;
+      border-radius: 16px;
+      padding: 16px 20px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border-left: 6px solid #0ea5e9;
+    }
+
+    .step-num {
+      font-size: 1rem;
+      font-weight: bold;
+      color: #0ea5e9;
+      margin-bottom: 4px;
+    }
+
+    .step-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-bottom: 6px;
+      color: #1e293b;
+    }
+
+    .step-desc {
+      color: #475569;
+      font-size: 1.1rem;
+    }
+
+    .step.green  { border-left-color: #22c55e; }
+    .step.orange { border-left-color: #f97316; }
+    .step.purple { border-left-color: #8b5cf6; }
+    .step.sky    { border-left-color: #0ea5e9; }
+
+    .step.green  .step-num { color: #22c55e; }
+    .step.orange .step-num { color: #f97316; }
+    .step.purple .step-num { color: #8b5cf6; }
+
+    .hint {
+      background: #fef9c3;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-top: 6px;
+      font-size: 1rem;
+      color: #713f12;
+    }
+
+    ruby rt {
+      font-size: 0.55em;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="back-link">← もどる</a>
+
+  <h1>🎬 つかいかた</h1>
+
+  <div class="step sky">
+    <div class="step-num">ステップ 1</div>
+    <div class="step-title">📺 みたい<ruby>動画<rt>どうが</rt></ruby>を2つえらぼう</div>
+    <div class="step-desc">
+      YouTubeをひらいて、みたい<ruby>動画<rt>どうが</rt></ruby>のページにいこう。<br>
+      <ruby>画面<rt>がめん</rt></ruby>の上にある<ruby>住所<rt>じゅうしょ</rt></ruby>（URL）をコピーしてね。
+    </div>
+    <div class="hint">
+      💡 URLは「https://www.youtube.com/watch?v=...」のようなながい<ruby>文字<rt>もじ</rt></ruby>だよ。<br>
+      　　<ruby>住所欄<rt>じゅうしょらん</rt></ruby>をクリックして、<ruby>全部<rt>ぜんぶ</rt></ruby>えらんでからコピーしよう！
+    </div>
+  </div>
+
+  <div class="step sky">
+    <div class="step-num">ステップ 2</div>
+    <div class="step-title">📋 URLをはりつけよう</div>
+    <div class="step-desc">
+      「🎥 どうが 1 の URL」のはこに、1つめのURLをはりつけよう。<br>
+      「🎥 どうが 2 の URL」のはこに、2つめのURLをはりつけよう。
+    </div>
+    <div class="hint">
+      💡 はりつけるときは、はこをクリックして右クリック →「ペースト」か、<br>
+      　　キーボードの <strong>Ctrl+V</strong>（Macは <strong>⌘+V</strong>）をおしてね！
+    </div>
+  </div>
+
+  <div class="step green">
+    <div class="step-num">ステップ 3</div>
+    <div class="step-title">▶ さいせいスタートをおそう</div>
+    <div class="step-desc">
+      「▶ さいせいスタート」ボタンをおすと、2つの<ruby>動画<rt>どうが</rt></ruby>がいっしょにはじまるよ！<br>
+      すこし待つと「⏳ よみこみ中…」がおわって、じどうでさいせいされるよ。
+    </div>
+  </div>
+
+  <div class="step orange">
+    <div class="step-num">ステップ 4</div>
+    <div class="step-title">⏸ とめたいときは？</div>
+    <div class="step-desc">
+      「⏸ いっしょにとめる」ボタンをおすと、2つともいっしょにとまるよ。<br>
+      もういちどおすと「▶ いっしょにさいせい」になってまたはじまるよ。
+    </div>
+  </div>
+
+  <div class="step purple">
+    <div class="step-num">ステップ 5</div>
+    <div class="step-title">🔄 CMがおわったら？</div>
+    <div class="step-desc">
+      CMが<ruby>入<rt>はい</rt></ruby>ってタイミングがずれたら、「🔄 CMがおわったらここを<ruby>押<rt>お</rt></ruby>して」ボタンをおそう。<br>
+      2つの<ruby>動画<rt>どうが</rt></ruby>がはじめからいっしょにやりなおすよ。
+    </div>
+  </div>
+
+  <div class="step sky">
+    <div class="step-num">ステップ 6</div>
+    <div class="step-title">🔊 おとをかえたいときは？</div>
+    <div class="step-desc">
+      それぞれの<ruby>動画<rt>どうが</rt></ruby>の下に「🔊」のスライダーがあるよ。<br>
+      ひだりにうごかすとちいさく、みぎにうごかすとおおきくなるよ。
+    </div>
+  </div>
+
+  <a href="index.html" class="back-link">← アプリにもどる</a>
+
+</body>
+</html>

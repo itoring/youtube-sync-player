@@ -6,16 +6,18 @@ let player1Ready = false;
 let player2Ready = false;
 let seekInterval = null;
 let isSeeking = false;
+let loadedUrl1 = '';
+let loadedUrl2 = '';
 
-const btnLoad   = document.getElementById('btn-load');
 const btnPlay   = document.getElementById('btn-play');
-const btnPause  = document.getElementById('btn-pause');
 const btnResync = document.getElementById('btn-resync');
 const seekbar  = document.getElementById('seekbar');
 const currentTimeEl = document.getElementById('current-time');
 const totalTimeEl   = document.getElementById('total-time');
 const vol1 = document.getElementById('vol1');
 const vol2 = document.getElementById('vol2');
+const url1Input = document.getElementById('url1');
+const url2Input = document.getElementById('url2');
 const error1El = document.getElementById('error1');
 const error2El = document.getElementById('error2');
 
@@ -44,7 +46,8 @@ function initPlayers(id1, id2) {
   player1Ready = false;
   player2Ready = false;
   btnPlay.disabled = true;
-  btnPause.disabled = true;
+  btnPlay.textContent = '⏳ よみこみ中…';
+  btnResync.disabled = true;
   error1El.textContent = '';
   error2El.textContent = '';
 
@@ -52,7 +55,6 @@ function initPlayers(id1, id2) {
   if (player1) { player1.destroy(); player1 = null; }
   if (player2) { player2.destroy(); player2 = null; }
 
-  // プレイヤー1の div をリセット
   resetPlayerDiv('player1');
   resetPlayerDiv('player2');
 
@@ -92,9 +94,6 @@ function onPlayerReady(num) {
   }
 
   if (player1Ready && player2Ready) {
-    // 両方準備完了 → 自動再生スタート
-    btnPlay.disabled = false;
-    btnPause.disabled = false;
     btnResync.disabled = false;
     startPlayback();
   }
@@ -103,6 +102,8 @@ function onPlayerReady(num) {
 function onPlayerError(num) {
   const el = num === 1 ? error1El : error2El;
   el.textContent = 'この動画は再生できません';
+  btnPlay.disabled = false;
+  btnPlay.textContent = '▶ さいせいスタート';
 }
 
 // ── 再生制御 ────────────────────────────────────────────────────────────────
@@ -110,34 +111,66 @@ function onPlayerError(num) {
 function startPlayback() {
   player1.playVideo();
   player2.playVideo();
-  showPauseButton();
+  btnPlay.disabled = false;
+  btnPlay.textContent = '⏸ いっしょにとめる';
   startSeekbarUpdate();
-}
-
-function showPlayButton() {
-  btnPlay.style.display  = 'inline-block';
-  btnPause.style.display = 'none';
-}
-
-function showPauseButton() {
-  btnPlay.style.display  = 'none';
-  btnPause.style.display = 'inline-block';
 }
 
 btnPlay.addEventListener('click', () => {
-  if (!player1Ready || !player2Ready) return;
-  player1.playVideo();
-  player2.playVideo();
-  showPauseButton();
-  startSeekbarUpdate();
+  const url1 = url1Input.value.trim();
+  const url2 = url2Input.value.trim();
+
+  // 未読み込み or URL変更 → 新規読み込み
+  if (url1 !== loadedUrl1 || url2 !== loadedUrl2) {
+    if (!url1 || !url2) {
+      alert('URLを入力してください');
+      return;
+    }
+    const id1 = extractVideoId(url1);
+    const id2 = extractVideoId(url2);
+    if (!id1 || !id2) {
+      alert('YouTubeのURLを正しく入力してください');
+      return;
+    }
+    if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
+      alert('YouTube APIの読み込みが完了していません。少し待ってから再試行してください。');
+      return;
+    }
+    loadedUrl1 = url1;
+    loadedUrl2 = url2;
+    seekbar.value = 0;
+    seekbar.disabled = false;
+    currentTimeEl.textContent = '0:00';
+    totalTimeEl.textContent   = '0:00';
+    clearInterval(seekInterval);
+    initPlayers(id1, id2);
+    return;
+  }
+
+  // 再生中 → 一時停止
+  if (player1Ready && player2Ready) {
+    const state1 = player1.getPlayerState();
+    if (state1 === YT.PlayerState.PLAYING) {
+      player1.pauseVideo();
+      player2.pauseVideo();
+      btnPlay.textContent = '▶ いっしょにさいせい';
+    } else {
+      player1.playVideo();
+      player2.playVideo();
+      btnPlay.textContent = '⏸ いっしょにとめる';
+      startSeekbarUpdate();
+    }
+  }
 });
 
-btnPause.addEventListener('click', () => {
-  if (!player1Ready || !player2Ready) return;
-  player1.pauseVideo();
-  player2.pauseVideo();
-  showPlayButton();
-});
+// URLが変わったらボタンをスタートに戻す
+function resetBtnOnUrlChange() {
+  loadedUrl1 = '';
+  loadedUrl2 = '';
+  btnPlay.textContent = '▶ さいせいスタート';
+}
+url1Input.addEventListener('input', resetBtnOnUrlChange);
+url2Input.addEventListener('input', resetBtnOnUrlChange);
 
 btnResync.addEventListener('click', () => {
   if (!player1Ready || !player2Ready) return;
@@ -146,7 +179,7 @@ btnResync.addEventListener('click', () => {
   setTimeout(() => {
     player1.playVideo();
     player2.playVideo();
-    showPauseButton();
+    btnPlay.textContent = '⏸ いっしょにとめる';
     startSeekbarUpdate();
   }, 300);
 });
@@ -200,40 +233,6 @@ vol1.addEventListener('input', () => {
 
 vol2.addEventListener('input', () => {
   if (player2Ready) player2.setVolume(parseInt(vol2.value, 10));
-});
-
-// ── さいせいスタートボタン ──────────────────────────────────────────────────
-
-btnLoad.addEventListener('click', () => {
-  const url1 = document.getElementById('url1').value.trim();
-  const url2 = document.getElementById('url2').value.trim();
-
-  if (!url1 || !url2) {
-    alert('URLを入力してください');
-    return;
-  }
-
-  const id1 = extractVideoId(url1);
-  const id2 = extractVideoId(url2);
-
-  if (!id1 || !id2) {
-    alert('YouTubeのURLを正しく入力してください');
-    return;
-  }
-
-  if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
-    alert('YouTube APIの読み込みが完了していません。少し待ってから再試行してください。');
-    return;
-  }
-
-  seekbar.value = 0;
-  seekbar.disabled = false;
-  currentTimeEl.textContent = '0:00';
-  totalTimeEl.textContent   = '0:00';
-  clearInterval(seekInterval);
-  showPlayButton();
-
-  initPlayers(id1, id2);
 });
 
 // ── ユーティリティ ──────────────────────────────────────────────────────────

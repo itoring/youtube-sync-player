@@ -10,6 +10,7 @@ let loadedUrl1 = '';
 let loadedUrl2 = '';
 
 const btnPlay   = document.getElementById('btn-play');
+const btnCopy   = document.getElementById('btn-copy');
 const btnResync = document.getElementById('btn-resync');
 const seekbar  = document.getElementById('seekbar');
 const currentTimeEl = document.getElementById('current-time');
@@ -20,6 +21,17 @@ const url1Input = document.getElementById('url1');
 const url2Input = document.getElementById('url2');
 const error1El = document.getElementById('error1');
 const error2El = document.getElementById('error2');
+
+// ── URLパラメータで動画IDをプリセット ──────────────────────────────────────
+
+(function () {
+  const params = new URLSearchParams(location.search);
+  const v1 = params.get('v1');
+  const v2 = params.get('v2');
+  if (v1) url1Input.value = `https://www.youtube.com/watch?v=${v1}`;
+  if (v2) url2Input.value = `https://www.youtube.com/watch?v=${v2}`;
+  if (v1 && v2) btnCopy.disabled = false;
+})();
 
 // ── YouTube IFrame API ──────────────────────────────────────────────────────
 
@@ -163,14 +175,30 @@ btnPlay.addEventListener('click', () => {
   }
 });
 
-// URLが変わったらボタンをスタートに戻す
-function resetBtnOnUrlChange() {
+// URLが変わったらボタンをスタートに戻す・コピーボタンの有効/無効を更新
+function onUrlChange() {
   loadedUrl1 = '';
   loadedUrl2 = '';
   btnPlay.textContent = '▶ さいせいスタート';
+  const id1 = extractVideoId(url1Input.value.trim());
+  const id2 = extractVideoId(url2Input.value.trim());
+  btnCopy.disabled = !(id1 && id2);
 }
-url1Input.addEventListener('input', resetBtnOnUrlChange);
-url2Input.addEventListener('input', resetBtnOnUrlChange);
+url1Input.addEventListener('input', onUrlChange);
+url2Input.addEventListener('input', onUrlChange);
+
+// シェアURLをクリップボードにコピー
+btnCopy.addEventListener('click', () => {
+  const id1 = extractVideoId(url1Input.value.trim());
+  const id2 = extractVideoId(url2Input.value.trim());
+  if (!id1 || !id2) return;
+  const url = `${location.origin}${location.pathname}?v1=${id1}&v2=${id2}`;
+  navigator.clipboard.writeText(url).then(() => {
+    const orig = btnCopy.textContent;
+    btnCopy.textContent = '✅ コピーしました！';
+    setTimeout(() => { btnCopy.textContent = orig; }, 2000);
+  });
+});
 
 btnResync.addEventListener('click', () => {
   if (!player1Ready || !player2Ready) return;

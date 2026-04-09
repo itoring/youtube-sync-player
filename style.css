@@ -204,6 +204,17 @@ h1 {
   background: #ea580c;
 }
 
+.btn-copy {
+  background: #0ea5e9;
+  color: #fff;
+  display: block;
+  margin: 0 auto;
+}
+
+.btn-copy:hover:not(:disabled) {
+  background: #0284c7;
+}
+
 .btn-resync {
   background: #8b5cf6;
   color: #fff;
